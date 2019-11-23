@@ -12,9 +12,21 @@ after_success:
   - docker build -t antrancs/multi-client ./client
   - docker build -t antrancs/multi-nginx ./nginx
   - docker build -t antrancs/multi-server ./server
-  - docker build -t antrancs/multi-workder ./worker
+  - docker build -t antrancs/multi-worker ./worker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push antrancs/multi-client
   - docker push antrancs/multi-nginx
   - docker push antrancs/multi-server
-  - docker push antrancs/multi-workder
+  - docker push antrancs/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  env: MultiDocker-env
+  app: multi-docker
+  bucker_name: elasticbeanstalk-us-east-1-366918854453
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
